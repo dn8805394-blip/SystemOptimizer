@@ -6,32 +6,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Giải nén và tự động đưa file ra ngoài nếu bị bọc trong thư mục SystemOptimizer
-      - name: Unzip project files
+      # Giải nén và liệt kê toàn bộ cấu trúc file ra màn hình
+      - name: Unzip and List Files
         run: |
           unzip -o project.zip
-          if [ -d "SystemOptimizer" ]; then
-            echo "Phát hiện thư mục lồng, đang đưa file ra ngoài..."
-            mv SystemOptimizer/* . 2>/dev/null || true
-            mv SystemOptimizer/.* . 2>/dev/null || true
-            rm -rf SystemOptimizer
-          fi
-          rm -f project.zip
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          echo "=== DANH SÁCH FILE SAU KHI GIẢI NÉN ==="
+          find . -maxdepth 3
+          echo "========================================"
