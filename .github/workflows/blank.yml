@@ -19,19 +19,21 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Tự động sinh ra các file Gradle bị thiếu ở thư mục gốc
+      # 3. Tự động sinh ra các file Gradle bị thiếu ở thư mục gốc (không dùng libs)
       - name: Generate missing Gradle wrapper and root files
         run: |
           # Cài đặt công cụ Gradle trên máy chủ
           sudo apt-get update && sudo apt-get install -y gradle
           
-          # Tự tạo file build.gradle.kts ở thư mục gốc nếu chưa có
+          # Tự tạo file build.gradle.kts ở thư mục gốc nếu chưa có (dùng phiên bản trực tiếp)
           if [ ! -f "build.gradle.kts" ]; then
-            echo '// Top-level build file' > build.gradle.kts
-            echo 'plugins {' >> build.gradle.kts
-            echo '    alias(libs.plugins.android.application) apply false' >> build.gradle.kts
-            echo '    alias(libs.plugins.kotlin.android) apply false' >> build.gradle.kts
-            echo '}' >> build.gradle.kts
+            cat <<EOF > build.gradle.kts
+            // Top-level build file
+            plugins {
+                id("com.android.application") version "8.1.1" apply false
+                id("org.jetbrains.kotlin.android") version "1.9.0" apply false
+            }
+            EOF
           fi
           
           # Khởi tạo Gradle Wrapper hoàn chỉnh (sinh ra gradlew và thư mục gradle/)
